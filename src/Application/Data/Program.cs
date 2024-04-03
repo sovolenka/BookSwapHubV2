@@ -1,13 +1,31 @@
-﻿// See https://aka.ms/new-console-template for more information
-using Data;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-Console.WriteLine("Hello, World!");
+namespace Data;
 
-var optionsBuilder = new DbContextOptionsBuilder<PostgresContext>();
-optionsBuilder.UseNpgsql("Server=;Port=;Database=BookSwapHub;Username=;Password=");
-var context = new PostgresContext(optionsBuilder.Options);
+public class Program
+{
+    public static void Main(string[] args)
+        => CreateHostBuilder(args).Build().Run();
 
-var canConnect = context.Database.CanConnect();
+    // EF Core uses this method at design time to access the DbContext
+    public static IHostBuilder CreateHostBuilder(string[] args)
+        => Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(
+                webBuilder => webBuilder.UseStartup<Startup>());
+}
 
-Console.WriteLine(canConnect);
+public class Startup
+{
+    private const string conn = "Server=localhost;Port=5432;Database=BookSwapHub;Username=postgres;Password=4";
+
+    public void ConfigureServices(IServiceCollection services)
+        => services.AddDbContext<PostgresContext>(options => options.UseNpgsql(conn));
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+    }
+}

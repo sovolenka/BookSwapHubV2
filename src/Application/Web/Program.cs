@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Data;
 using Data.Models;
+using Business.Models.Mail;
+using Business.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<PostgresContext>();
 builder.Services.AddRazorPages();
+
+// configure mail sending
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddTransient<IMailService, MailService>();
 
 var app = builder.Build();
 
