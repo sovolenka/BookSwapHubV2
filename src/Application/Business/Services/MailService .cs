@@ -83,7 +83,7 @@ public class MailService : IMailService
         }
     }
 
-    public bool SendHTMLMail(HTMLMailData htmlMailData)
+    public bool SendHTMLMail(MailHTMLData htmlMailData)
     {
         try
         {
@@ -99,7 +99,7 @@ public class MailService : IMailService
             BodyBuilder emailBodyBuilder = new()
             {
                 HtmlBody = htmlMailData.EmailBodyHTML,
-                TextBody = htmlMailData.EmailBodyText
+                TextBody = htmlMailData.EmailBody
             };
 
             emailMessage.Body = emailBodyBuilder.ToMessageBody();
@@ -119,7 +119,7 @@ public class MailService : IMailService
         }
     }
 
-    public async Task<bool> SendHTMLMailAsync(HTMLMailData htmlMailData)
+    public async Task<bool> SendHTMLMailAsync(MailHTMLData htmlMailData)
     {
         try
         {
@@ -135,7 +135,7 @@ public class MailService : IMailService
             BodyBuilder emailBodyBuilder = new()
             {
                 HtmlBody = htmlMailData.EmailBodyHTML,
-                TextBody = htmlMailData.EmailBodyText
+                TextBody = htmlMailData.EmailBody
             };
 
             emailMessage.Body = emailBodyBuilder.ToMessageBody();
