@@ -20,7 +20,7 @@ public class Program
 
 public class Startup
 {
-    private const string conn = "Server=localhost;Port=5432;Database=BookSwapHub;Username=postgres;Password=4";
+    private const string conn = "Server=*;Port=*;Database=*;Username=*;Password=*";
 
     public void ConfigureServices(IServiceCollection services)
         => services.AddDbContext<PostgresContext>(options => options.UseNpgsql(conn));

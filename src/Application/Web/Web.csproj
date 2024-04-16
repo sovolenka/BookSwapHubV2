@@ -4,20 +4,12 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-Web-7f5a9893-ab5a-4e47-80e5-55d23efadff8</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Settings\MailSettings.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Settings\MailSettings.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MailKit" Version="4.4.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.28" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.29" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.29" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
   </ItemGroup>
 
   <ItemGroup>
