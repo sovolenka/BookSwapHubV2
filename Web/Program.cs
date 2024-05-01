@@ -1,5 +1,9 @@
+using Business.Models.Mail;
+using Business.Services;
+using Business.Services.Interfaces;
 using Data;
 using Data.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,12 +13,15 @@ builder.Services.AddControllersWithViews();
 
 // Postgres
 builder.Services.AddDbContext<PostgresContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString"), b => b.MigrationsAssembly("Web")));
 
 // Identity
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => {
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+{
     options.SignIn.RequireConfirmedAccount = true;
+
     options.User.RequireUniqueEmail = true;
+
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireNonAlphanumeric = true;
@@ -26,8 +33,15 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => {
 builder.Services.AddRazorPages();
 
 // configure mail sending
-// builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
-// builder.Services.AddTransient<IEmailSender, MailService>();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddTransient<IEmailSender, MailService>();
+
+// register services
+builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
+builder.Services.AddScoped<IBookPostingService, BookPostingService>();
+
+// admin panel
+builder.Services.AddCoreAdmin();
 
 var app = builder.Build();
 
@@ -41,6 +55,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.MapDefaultControllerRoute();
 
 app.UseRouting();
 
@@ -51,6 +66,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
+
 app.MapRazorPages();
 
 app.Run();

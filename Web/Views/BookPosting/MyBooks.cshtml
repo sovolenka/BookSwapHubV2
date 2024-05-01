@@ -1,0 +1,18 @@
+@using Data.Models;
+@model PaginationViewModel<BookPosting>
+
+@{
+    ViewData["Title"] = "My Books";
+}
+
+<partial name="_BookPostingSearch" />
+
+<div style="text-align: center;">
+    <h1>My Books</h1>
+    <h4>Add more books to your collection: <a asp-action="Add" asp-controller="BookPosting"
+            class="btn btn-outline-secondary">Add a book</a></h4>
+</div>
+
+
+
+<partial name="_MyBookPostingList" model="Model" />

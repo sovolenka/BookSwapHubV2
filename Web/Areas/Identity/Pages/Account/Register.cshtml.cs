@@ -28,6 +28,7 @@ namespace Web.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
+        private readonly IUserPhoneNumberStore<ApplicationUser> _phoneNumberStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
@@ -41,6 +42,7 @@ namespace Web.Areas.Identity.Pages.Account
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
+            _phoneNumberStore = GetPhoneNumberStore();
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
@@ -91,6 +93,15 @@ namespace Web.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
+            // phone number
+            [Required]
+            [Phone]
+            // validate with regex, starts with + and country code, followed by 9 digits
+            [RegularExpression(@"^\+[0-9]{1,3}[0-9]{9}$", ErrorMessage = "The phone number must be in the format +0123456789")]
+            [Display(Name = "Phone Number")]
+            public string PhoneNumber { get; set; }
+
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -105,6 +116,7 @@ namespace Web.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            [Required]
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
@@ -128,6 +140,7 @@ namespace Web.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                await _phoneNumberStore.SetPhoneNumberAsync(user, Input.PhoneNumber, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
@@ -144,7 +157,7 @@ namespace Web.Areas.Identity.Pages.Account
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account\n{HtmlEncoder.Default.Encode(callbackUrl)}");
+                        $"Please confirm your account\n{callbackUrl}");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -191,6 +204,15 @@ namespace Web.Areas.Identity.Pages.Account
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
+        }
+
+        private IUserPhoneNumberStore<ApplicationUser> GetPhoneNumberStore()
+        {
+            if (!_userManager.SupportsUserPhoneNumber)
+            {
+                throw new NotSupportedException("The default UI requires a user store with phone number support.");
+            }
+            return (IUserPhoneNumberStore<ApplicationUser>)_userStore;
         }
     }
 }

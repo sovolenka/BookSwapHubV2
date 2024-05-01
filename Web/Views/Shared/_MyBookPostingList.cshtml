@@ -1,0 +1,19 @@
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+    @foreach (var item in Model.Items)
+    {
+        <partial name="_MyBookPostingBox" model="item" />
+    }
+</div>
+<div style="text-align: center;">
+    Page @(Model.PageNumber) of @(Model.TotalPages)
+
+    @if (Model.HasPreviousPage)
+    {
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-pageSize=@Model.PageSize>Previous</a>
+    }
+
+    @if (Model.HasNextPage)
+    {
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-pageSize=@Model.PageSize>Next</a>
+    }
+</div>

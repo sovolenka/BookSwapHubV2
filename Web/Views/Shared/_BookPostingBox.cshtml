@@ -1,0 +1,37 @@
+@using Data.Models
+@model BookPosting
+
+<a href="posts/@Model.Id" style="text-decoration:none; color:inherit;">
+    <div class="card" style="width: 18rem; margin: 10px;">
+        <img src="@Model.PictureUrl" class="card-img-top" alt="@Model.Book.Name" style="height: 25rem;">
+        <div class="card-body">
+            @{
+                int i = 0;
+                int j = 0;
+                int maxLen = 22;
+                string[] words = Model.Book.Name.Split(' ');
+                foreach (string word in words)
+                {
+                    if (i + word.Length > maxLen)
+                    {
+                        break;
+                    }
+                    i += word.Length + 1;
+                    j += word.Length + 1;
+                }
+            }
+
+            @if (Model.Book.Name.Length > maxLen)
+            {
+                <h5 class="card-title">@Model.Book.Name.Substring(0, j - 1)...</h5>
+            }
+            else
+            {
+                <h5 class="card-title">@Model.Book.Name</h5>
+            }
+
+            <p class="card-text">@Model.Book.Author</p>
+            <p class="card-text">@Model.Book.PublicationYear</p>
+        </div>
+    </div>
+</a>

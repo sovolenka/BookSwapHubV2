@@ -1,0 +1,61 @@
+@using Data.Models
+@model BookPosting
+
+<a href="posts/@Model.Id" style="text-decoration:none; color:inherit;">
+    <div class="card" style="width: 18rem; margin: 10px;">
+        <img src="@Model.PictureUrl" class="card-img-top" alt="@Model.Book.Name" style="height: 25rem;">
+        <div class="card-body">
+            @* status: Active if Model.ExpireDateTime > UtcNow() else Inactive*@
+            @if (Model.ExpireDateTime > DateTime.UtcNow)
+            {
+                <span class="badge bg-success">Active</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">Inactive</span>
+            }
+
+            @{
+                int i = 0;
+                int j = 0;
+                int maxLen = 22;
+                string[] words = Model.Book.Name.Split(' ');
+                foreach (string word in words)
+                {
+                    if (i + word.Length > maxLen)
+                    {
+                        break;
+                    }
+                    i += word.Length + 1;
+                    j += word.Length + 1;
+                }
+            }
+
+            @if (Model.Book.Name.Length > maxLen)
+            {
+                <h5 class="card-title">@Model.Book.Name.Substring(0, j - 1)...</h5>
+            }
+            else
+            {
+                <h5 class="card-title">@Model.Book.Name</h5>
+            }
+
+            <p class="card-text">@Model.Book.Author</p>
+            <p class="card-text">@Model.Book.PublicationYear</p>
+            @* post and expiration dates *@
+            <p class="card-text">Posted on: @Model.PostDateTime.Date</p>
+            <p class="card-text">Expires on: @Model.ExpireDateTime.Date</p>
+        </div>
+        <div class="card-footer">
+            @if (Model.ExpireDateTime < DateTime.UtcNow)
+            {
+                <a asp-action="Activate" asp-controller="BookPosting" asp-route-id="@Model.Id"
+                    class="btn btn-outline-secondary">Activate</a>
+            }
+            <a asp-action="Edit" asp-controller="BookPosting" asp-route-id="@Model.Id"
+                class="btn btn-outline-secondary">Edit</a>
+            <a asp-action="Delete" asp-controller="BookPosting" asp-route-id="@Model.Id"
+                class="btn btn-outline-secondary">Delete</a>
+        </div>
+    </div>
+</a>

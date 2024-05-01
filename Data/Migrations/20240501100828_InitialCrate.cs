@@ -6,10 +6,27 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Data.Migrations
 {
-    public partial class InitialMigrations : Migration
+    public partial class InitialCrate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Street = table.Column<string>(type: "text", nullable: false),
+                    City = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    State = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    Zip = table.Column<string>(type: "text", nullable: false),
+                    Country = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -49,6 +66,25 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Books",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    Author = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    Year = table.Column<int>(type: "integer", nullable: false),
+                    Genre = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    Language = table.Column<string>(type: "text", nullable: false),
+                    Publisher = table.Column<string>(type: "text", nullable: false),
+                    PublicationYear = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Books", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -157,6 +193,84 @@ namespace Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "BookPostings",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OwnerId = table.Column<string>(type: "text", nullable: false),
+                    BookId = table.Column<long>(type: "bigint", nullable: false),
+                    AddressId = table.Column<long>(type: "bigint", nullable: false),
+                    Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    PostDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ExpireDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    PictureUrl = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookPostings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BookPostings_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookPostings_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookPostings_Books_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Books",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SwapProposals",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SenderId = table.Column<string>(type: "text", nullable: false),
+                    ReceiverId = table.Column<string>(type: "text", nullable: false),
+                    BookPostingId = table.Column<long>(type: "bigint", nullable: false),
+                    Message = table.Column<string>(type: "text", nullable: false),
+                    ProposalStatus = table.Column<int>(type: "integer", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SwapProposals", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SwapProposals_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SwapProposals_AspNetUsers_ReceiverId",
+                        column: x => x.ReceiverId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SwapProposals_AspNetUsers_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SwapProposals_BookPostings_BookPostingId",
+                        column: x => x.BookPostingId,
+                        principalTable: "BookPostings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -193,6 +307,51 @@ namespace Data.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookPostings_AddressId",
+                table: "BookPostings",
+                column: "AddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookPostings_BookId",
+                table: "BookPostings",
+                column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookPostings_ExpireDateTime_PostDateTime_OwnerId",
+                table: "BookPostings",
+                columns: new[] { "ExpireDateTime", "PostDateTime", "OwnerId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookPostings_OwnerId",
+                table: "BookPostings",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Books_Genre_Language",
+                table: "Books",
+                columns: new[] { "Genre", "Language" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SwapProposals_ApplicationUserId",
+                table: "SwapProposals",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SwapProposals_BookPostingId",
+                table: "SwapProposals",
+                column: "BookPostingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SwapProposals_ReceiverId",
+                table: "SwapProposals",
+                column: "ReceiverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SwapProposals_SenderId",
+                table: "SwapProposals",
+                column: "SenderId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -213,10 +372,22 @@ namespace Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "SwapProposals");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "BookPostings");
+
+            migrationBuilder.DropTable(
+                name: "Addresses");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Books");
         }
     }
 }

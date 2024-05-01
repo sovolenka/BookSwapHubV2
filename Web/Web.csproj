@@ -7,9 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CoreAdmin" Version="2.6.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.29" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.29" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+    <PackageReference Include="Moq" Version="4.20.70" />
   </ItemGroup>
 
   <ItemGroup>

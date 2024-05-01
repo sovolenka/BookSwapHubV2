@@ -1,0 +1,54 @@
+@using Data.Models
+@model BookPosting
+
+@{
+    ViewData["Title"] = "About book";
+}
+
+
+<div>
+<h2>@ViewData["Title"]</h2>
+<hr />
+    <dl class="row">
+        <dt class="col-md-3">
+            <img src="@Model.PictureUrl" class="col-md-9"><img>
+            <p>Owner: @Model.Owner.Name @Model.Owner.Surname</p>
+        </dt>
+        <dd class="col-md-9">
+            <div >
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Book Title</th>
+                            <td>@Model.Book.Name</td>
+                        </tr>
+                        <tr>
+                            <th>Posted By</th>
+                            <td>@Model.Book.Author</td>
+                        </tr>
+                        <tr>
+                            <th>Genre</th>
+                            <td>@Model.Book.Genre</td>
+                        </tr>
+                        <tr>
+                            <th>Description</th>
+                            <td>@Model.Description</td>
+                        </tr>
+                        <tr>
+                            <th>Publication Year</th>
+                            <td>@Model.Book.PublicationYear</td>
+                        </tr>
+                        <tr>
+                            <th>Language</th>
+                            <td>@Model.Book.Language</td>
+                        </tr>
+                        <tr>
+                            <th>Publisher</th>
+                            <td>@Model.Book.Publisher</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </dd>
+    </dl>
+</div>
