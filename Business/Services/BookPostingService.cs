@@ -38,13 +38,12 @@ public class BookPostingService : IBookPostingService
     {
         var p = _context.BookPostings!.Add(bookPosting);
         _context.SaveChanges();
-        return p.Entity;
+        return p?.Entity;
     }
 
     public BookPosting? Update(long postingId, BookPosting newBookPosting)
     {
-        var existingBookPosting = Get()
-            .FirstOrDefault(x => x.Id == postingId);
+        var existingBookPosting = GetById(postingId);
 
         if (existingBookPosting != null)
         {
@@ -53,22 +52,27 @@ public class BookPostingService : IBookPostingService
             existingBookPosting.ExpireDateTime = DateTime.UtcNow.AddDays(30);
             existingBookPosting.PictureUrl = newBookPosting.PictureUrl;
 
-            existingBookPosting.Address.Street = newBookPosting.Address.Street;
-            existingBookPosting.Address.City = newBookPosting.Address.City;
-            existingBookPosting.Address.State = newBookPosting.Address.State;
-            existingBookPosting.Address.Zip = newBookPosting.Address.Zip;
-            existingBookPosting.Address.Country = newBookPosting.Address.Country;
+            if (newBookPosting.Address != null)
+            {
+                existingBookPosting.Address.Street = newBookPosting.Address.Street;
+                existingBookPosting.Address.City = newBookPosting.Address.City;
+                existingBookPosting.Address.State = newBookPosting.Address.State;
+                existingBookPosting.Address.Zip = newBookPosting.Address.Zip;
+                existingBookPosting.Address.Country = newBookPosting.Address.Country;
+            }
 
-            existingBookPosting.Book.Name = newBookPosting.Book.Name;
-            existingBookPosting.Book.Author = newBookPosting.Book.Author;
-            existingBookPosting.Book.Year = newBookPosting.Book.Year;
-            existingBookPosting.Book.Genre = newBookPosting.Book.Genre;
-            existingBookPosting.Book.Language = newBookPosting.Book.Language;
-            existingBookPosting.Book.Publisher = newBookPosting.Book.Publisher;
-            existingBookPosting.Book.PublicationYear = newBookPosting.Book.PublicationYear;
+            if (newBookPosting.Book != null)
+            {
+                existingBookPosting.Book.Name = newBookPosting.Book.Name;
+                existingBookPosting.Book.Author = newBookPosting.Book.Author;
+                existingBookPosting.Book.Year = newBookPosting.Book.Year;
+                existingBookPosting.Book.Genre = newBookPosting.Book.Genre;
+                existingBookPosting.Book.Language = newBookPosting.Book.Language;
+                existingBookPosting.Book.Publisher = newBookPosting.Book.Publisher;
+                existingBookPosting.Book.PublicationYear = newBookPosting.Book.PublicationYear;
+            }
 
-            _context.BookPostings!.Update(existingBookPosting);
-
+            existingBookPosting = _context.BookPostings!.Update(existingBookPosting)?.Entity;
             _context.SaveChanges();
         }
         return existingBookPosting;
