@@ -39,6 +39,6 @@ public class PostgresContext : IdentityDbContext<ApplicationUser>
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Server=bookswaphub-postgres.postgres.database.azure.com;Database=BookSwapHub;Port=5432;User Id=pgadmin;Password=CustomerHub0;Ssl Mode=VerifyFull;");
+        optionsBuilder.UseNpgsql("Server=makescalagreatagain-server.postgres.database.azure.com;Database=postgres;Port=5432;User Id=uvvyrflinj;Password=95HWt$uO3VW1rEor;Ssl Mode=VerifyFull;");
     }
 }

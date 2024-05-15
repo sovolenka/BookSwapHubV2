@@ -15,6 +15,19 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<PostgresContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString"), b => b.MigrationsAssembly("Web")));
 
+// Drop database if exists
+var context = builder.Services?.BuildServiceProvider().GetService<PostgresContext>();
+var deleted = context?.Database.EnsureDeleted();
+Console.WriteLine($"Database deleted: {deleted}");
+
+//create database
+var created = context?.Database.EnsureCreated();
+Console.WriteLine($"Database created: {created}");
+
+// migrate database
+context?.Database.Migrate();
+
+
 // Identity
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
