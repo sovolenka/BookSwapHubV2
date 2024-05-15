@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  db:
+    image: postgres
+    container_name: local_pgdb
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 4
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+
+  webapp:
+    build: .
+    container_name: webapp
+    restart: always
+    ports:
+      - "7291:7291"
+      - "5136:5136"
+    depends_on:
+      - db
+
+volumes:
+  local_pgdata:

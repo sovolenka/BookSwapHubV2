@@ -36,9 +36,4 @@ public class PostgresContext : IdentityDbContext<ApplicationUser>
             .WithMany()
             .HasForeignKey(s => s.ReceiverId);
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseNpgsql("Server=makescalagreatagain-server.postgres.database.azure.com;Database=postgres;Port=5432;User Id=uvvyrflinj;Password=95HWt$uO3VW1rEor;Ssl Mode=VerifyFull;");
-    }
 }
